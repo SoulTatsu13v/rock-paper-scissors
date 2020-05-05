@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- minify -->
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <!-- latest -->
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+    <!-- core style only -->
+    <link href="https://unpkg.com/nes.css/css/nes-core.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Let's play!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container-header">
+
+        <div class="score">
+            <div class="score-header">
+                <h1>Player</h1>
+            </div>
+
+            <div class="score-number">
+                <p id="playerScore">0</p>
+            </div>
+        </div>
+
+        <div class="score">
+            <div class="score-header">
+                <h1>Computer</h1>
+            </div>
+            <div class="score-number">
+                <p id="compScore">0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-player">
+        <section class="icon-list playerWon" id="show">
+            <i class="nes-icon trophy is-large"></i>
+        </section>
+        <section class="icon-list playerLost" id="showlost">
+            <i class="nes-icon close is-large"></i>
+        </section>
+        <div class="button-container" id="disapear">
+            <div class="button">
+                <button type="button" value="rock" id="rock" class="btn nes-btn" onclick="fired_button = 'rock'">
+                    rock
+                </button>
+            </div>
+            <div class="button">
+                <button type="button" value="paper" id="paper" class="btn nes-btn" onclick="fired_button = 'paper'">
+                    paper
+                </button>
+            </div>
+            <div class="button">
+                <button type="button" value="scissors" id="scissors" class="btn nes-btn"
+                    onclick="fired_button = 'scissors'">
+                    scissors
+                </button>
+            </div>
+            <div class="button">
+                <button type="button" value="scissors" id="scissors" class="btn nes-btn reset-button"
+                    onclick="refresh()">
+                    refresh
+                </button>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+    <div id="footer">
+        <div class="result">
+            <p id="gameResult"></p>
+        </div>
+        <div class="selectedValues">
+            <p class="userSelected"></p>
+        </div>
+
+        <div class="selectedValues">
+            <p class="compSelected"></p>
+        </div>
+
+    </div>
+
+
+
+    <script>
+        //Koniec i bomba
+        //A kto czytał, ten trąba!
+
+        //variable for user inputed value
+        var fired_button = document.querySelector("button").value;
+
+        //function for generating random computer input
+        function computerPlay() {
+            let choiceList = ['rock', 'paper', 'scissors'];
+            return choiceList[Math.floor(Math.random() * 3)];
+        }
+
+        //function for playing
+        function playRound(e) {
+            //getting needed values
+            const playerSelection = fired_button;
+            const computerSelection = computerPlay();
+            let roundResult = "";
+            const gameLine1 = document.querySelector(".userSelected").textContent =
+                `You selected: ${playerSelection}`;
+            const gameLine2 = document.querySelector(".compSelected").textContent =
+                `Computer selected: ${computerSelection}`;
+            const gameLine3 = document.getElementById('gameResult');
+
+            //simple if deciding who did win
+            if (playerSelection == computerSelection) {
+                roundResult = "tie";
+            } else {
+                if (playerSelection == "rock") {
+                    if (computerSelection == "paper") {
+                        roundResult = "lose";
+                    } else if (computerSelection == "scissors") {
+                        roundResult = "win";
+                    }
+                } else if (playerSelection == "paper") {
+                    if (computerSelection == "rock") {
+                        roundResult = "win";
+                    } else if (computerSelection == "scissors") {
+                        roundResult = "lose";
+                    }
+                } else if (playerSelection == "scissors") {
+                    if (computerSelection == "paper") {
+                        roundResult = "win";
+                    } else if (computerSelection == "rock") {
+                        roundResult = "lose";
+                    }
+                }
+            }
+
+            //if telling the user who has won the round
+            if (roundResult == "win") {
+                gameLine3.innerHTML = "You win the round! 1 point added to your score!";
+            } else if (roundResult == "lose") {
+                gameLine3.innerHTML = "You lost the round! 1 point added to CPU score!";
+            } else if (roundResult == "tie") {
+                gameLine3.innerHTML = "It's a tie! No points awarded.";
+            }
+
+            //getting second function to get the user score info
+            game(roundResult);
+        }
+
+        //getting value from whichever button the user decides to click
+        const buttons = document.querySelectorAll(".button");
+        buttons.forEach(button => button.addEventListener('click', playRound));
+
+        //variables for showing score to user
+        let compValue = 0;
+        let playerValue = 0;
+
+        function game(roundResult) {
+            let playerScore = document.getElementById('playerScore');
+            let compScore = document.getElementById('compScore');
+
+
+            if (roundResult == "win") {
+                playerValue++;
+
+            } else if (roundResult == "lose") {
+                compValue++;
+            }
+
+            playerScore.innerHTML = playerValue;
+            compScore.innerHTML = compValue;
+
+            if (compValue === 5) {
+                document.getElementById('disapear').style.display = "none";
+                document.getElementById('showlost').style.display = "block";
+            } else if (playerValue === 5) {
+                document.getElementById('disapear').style.display = "none";
+                document.getElementById('show').style.display = "block";
+            }
+        }
+
+        function refresh() {
+            location.reload();
+        }
+    </script>
+
+</body>
+
+</html>
